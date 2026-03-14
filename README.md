@@ -1,180 +1,184 @@
-# Dynamic Toolbar Assignment — React + Vite
+# Dynamic Toolbar Assignment — React + Vite + Vitest
 
-## Overview
+This project demonstrates how to build a dynamic React toolbar that renders multiple buttons from a data array. Each button is a reusable `AlertButton` component that triggers a unique browser alert when clicked. The buttons include inline styling and a hover effect for visual feedback.
 
-This project demonstrates how to build a **dynamic React Toolbar** that renders multiple buttons based on a **data array**. Each button is a reusable `AlertButton` component, capable of triggering a **unique browser alert** when clicked.  
-
-This assignment reinforces:
-
-- Passing props to reusable components  
-- Using `children` for button text  
-- Rendering components dynamically with `.map()`  
-- Assigning `key` props to dynamically created components  
-- Inline styling and hover effects in React  
-- Using Vite with Hot Module Replacement (HMR)
-
----
+The project also includes a complete automated test suite using Vitest and React Testing Library, validating both components and their dynamic behavior.
 
 ## Objectives
 
-- Create a reusable `AlertButton` component that accepts `message` and `children` props.  
-- Use a **data array** to dynamically render multiple buttons.  
-- Display a browser alert when a button is clicked.  
-- Ensure each button has a **unique key** in the render loop.  
-
----
+- Build a reusable `AlertButton` component  
+- Dynamically render multiple buttons from an array  
+- Trigger unique alert messages per button  
+- Apply inline styling and hover effects  
+- Write automated tests for both components  
+- Validate dynamic rendering, event handling, and empty states  
 
 ## Project Setup (Vite + React)
 
-1. **Initialize the project**
+1. Create the project:
 
 ```bash
 npm create vite@latest dynamic-toolbar-assignment -- --template react
 ```
 
-2. **Navigate into the project folder**
+2. Navigate into the project folder:
 
 ```bash
 cd dynamic-toolbar-assignment
 ```
 
-3. **Install dependencies**
+3. Install dependencies:
 
 ```bash
 npm install
 ```
 
-4. **Start the development server**
+4. Start the development server:
 
 ```bash
 npm run dev
 ```
 
-> **Tip:** Vite requires `.jsx` extensions for files containing JSX. Make sure your components are saved as `.jsx`.
+Use `.jsx` extensions for JSX files.
 
----
+## Testing Setup (Vitest + React Testing Library)
+
+1. Install testing dependencies:
+
+```bash
+npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom
+```
+
+2. Add a test script to `package.json`:
+
+```json
+"test": "vitest"
+```
+
+3. `vite.config.js`:
+
+```js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    setupFiles: './setupTests.js',
+    globals: true
+  }
+})
+```
+
+4. `setupTests.js`:
+
+```js
+import '@testing-library/jest-dom';
+```
 
 ## Component Structure
 
 ### AlertButton.jsx
 
-A reusable button component that:
-
 - Accepts a `message` prop  
-- Accepts `children` for button text  
-- Triggers `alert(message)` when clicked  
-- Includes inline styling and a **hover effect** (background color change + lift animation)
+- Uses `children` for button text  
+- Calls `alert(message)` on click  
+- Includes inline styling and hover animation  
 
 ### Toolbar.jsx
 
-A dynamic container component that:
+Defines a dynamic array of button objects:
 
-- Defines an array of button objects:
-
-```javascript
+```js
 const buttons = [
   { message: "Downloading!", children: "Download File" },
   { message: "Sharing!", children: "Share Document" },
-  { message: "Uploading!", children: "Upload File" },
-  // Add more buttons as needed
+  { message: "Uploading!", children: "Upload File" }
 ];
 ```
 
-- Uses `.map()` to render `AlertButton` components dynamically  
-- Assigns a **unique key** to each button  
-- Passes `message` and `children` props to each button  
+- Uses `.map()` to render `AlertButton` components  
+- Assigns unique `key` props  
+- Passes props directly to each button  
 
----
-
-## Example File Structure
+## File Structure
 
 ```
 src/
-├── App.jsx
 ├── AlertButton.jsx
 ├── Toolbar.jsx
+├── tests.jsx
+├── App.jsx
 ├── main.jsx
-└── index.css
+├── index.css
+setupTests.js
+vite.config.js
 ```
-
----
 
 ## How It Works
 
-- `Toolbar` iterates over the **buttons array** using `.map()`  
-- Each `AlertButton` displays its `children` text as the button label  
-- Clicking a button triggers `alert(message)`  
-- Inline styles provide hover effects and basic styling  
+- `Toolbar` maps over the `buttons` array  
+- Each `AlertButton` receives its own message and label  
+- Clicking a button triggers its unique alert  
+- Inline styles provide hover feedback  
 
 **Example Buttons**
 
-| Button Label       | Alert Message       |
-|------------------|-------------------|
-| Download File     | Downloading!      |
-| Share Document    | Sharing!          |
-| Upload File       | Uploading!        |
+| Button Label     | Alert Message |
+|------------------|---------------|
+| Download File    | Downloading!  |
+| Share Document   | Sharing!      |
+| Upload File      | Uploading!    |
 
----
+## Automated Test Suite (6 Tests Total)
 
-## Validation Steps
+All tests are located in `src/tests.jsx` and cover both components.
 
-1. Open your browser to the local Vite URL (usually `http://localhost:5173`)  
-2. Test each button in the toolbar and confirm:  
-   - The correct alert message appears  
-   - Each button triggers its **own unique message**  
-   - Buttons render with proper styling and hover effect
+### AlertButton Tests (2)
 
----
+1. Renders a button with the correct label and triggers alert  
+2. Handles missing children gracefully  
 
-## Test Cases
+### Toolbar Tests (4)
 
-### Normal Test Cases
+1. Renders the correct number of buttons dynamically  
+2. Each button triggers its own alert message  
+3. Updates correctly when the button array changes  
+4. Handles an empty buttons array gracefully  
 
-**Test Case 1: Download Button**
+### Actual Test Output
 
-- **Action:** Click the **Download File** button  
-- **Expected Result:** Alert shows `"Downloading!"`
+```
+✓ src/tests.jsx (6 tests)
+  ✓ AlertButton and Toolbar Combined Tests (6)
+    ✓ renders AlertButton with correct label and triggers alert
+    ✓ AlertButton handles empty children gracefully
+    ✓ Toolbar renders the correct number of buttons
+    ✓ Toolbar buttons trigger correct alert messages
+    ✓ Toolbar updates correctly when the buttons array changes
+    ✓ Toolbar handles empty buttons array gracefully
 
-**Test Case 2: Share Button**
+Test Files  1 passed (1)
+Tests       6 passed (6)
+```
 
-- **Action:** Click the **Share Document** button  
-- **Expected Result:** Alert shows `"Sharing!"`
+## Manual Validation Steps
 
-**Test Case 3: Upload Button**
-
-- **Action:** Click the **Upload File** button  
-- **Expected Result:** Alert shows `"Uploading!"`
-
----
-
-### Edge Test Cases
-
-**Test Case 4: Rapid Clicks**
-
-- **Action:** Click a button multiple times quickly  
-- **Expected Result:** Alert appears each time without crashing or errors
-
-**Test Case 5: Page Refresh**
-
-- **Action:** Refresh the browser page  
-- **Expected Result:** Buttons reload and remain functional
-
-**Test Case 6: Hover Effect Check**
-
-- **Action:** Hover the mouse over each button  
-- **Expected Result:** Button changes color and moves slightly upward  
-- Confirms hover styles are applied correctly
-
----
+- Open the Vite dev server  
+- Confirm each button renders correctly  
+- Click each button and verify the alert message  
+- Hover over each button to confirm styling  
+- Refresh the page to ensure state resets correctly  
 
 ## Summary
 
-This assignment demonstrates how to:
+This project demonstrates:
 
-- Build reusable components  
-- Pass props and children dynamically  
-- Render UI elements from a data array  
-- Handle events in React  
-- Apply inline styles and hover effects  
+- Reusable component architecture  
+- Dynamic UI rendering from data  
+- Event handling in React  
+- Inline styling and hover animations  
+- A complete test suite validating component behavior, including empty states  
 
-The result is a **dynamic, data-driven toolbar** that is easy to extend by simply adding more objects to the buttons array.
+The result is a fully dynamic, test‑driven toolbar that is easy to extend and maintain.
